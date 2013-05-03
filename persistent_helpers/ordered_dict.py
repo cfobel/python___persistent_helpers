@@ -34,6 +34,9 @@ class PersistentOrderedDict(persistent.Persistent):
     def values(self):
         return [v for k, v in self.iteritems()]
 
+    def get(self, key):
+        return self.data.get(key)
+
     def __delitem__(self, key):
         del self.data[key]
         i = self.key_index.index(key)
