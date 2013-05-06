@@ -45,5 +45,10 @@ class PersistentOrderedDict(persistent.Persistent):
     def __getitem__(self, key):
         return self.data[key]
 
+    def setdefault(self, key, default_value):
+        if key not in self:
+            self[key] = default_value
+        return self[key]
+
     def __contains__(self, key):
         return key in self.data
