@@ -56,6 +56,10 @@ class DurusStorage(BaseTransactionalStorage):
     default_storage_host = '127.0.0.1'
     default_storage_port = 2972
 
+    def __init__(self, cache_size=100, **kwargs):
+        self.cache_size = cache_size
+        super(DurusStorage, self).__init__(**kwargs)
+
     def abort(self):
         self.connection.abort()
 
@@ -65,10 +69,14 @@ class DurusStorage(BaseTransactionalStorage):
     def reset_db(self):
         if self.port:
             self.connection = durus.connection.Connection(
-                    durus.client_storage.ClientStorage(self.host, self.port))
+                    durus.client_storage.ClientStorage(self.host, self.port),
+                    cache_size=self.cache_size
+            )
         else:
             self.connection = durus.connection.Connection(
-                    durus.client_storage.ClientStorage(self.host))
+                    durus.client_storage.ClientStorage(self.host),
+                    cache_size=self.cache_size
+            )
         self.root = self.connection.get_root()
 
 
