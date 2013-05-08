@@ -1,9 +1,14 @@
+from collections import OrderedDict
+
 from path import path
 from ZODB import DB
 from ZEO import ClientStorage
 import durus.client_storage
 import durus.connection
 import durus.btree
+import durus.persistent_dict
+import durus.persistent_list
+import durus.persistent_set
 import transaction
 
 from .durus_types import PersistentOrderedDict
@@ -78,6 +83,17 @@ class DurusStorage(BaseTransactionalStorage):
                     cache_size=self.cache_size
             )
         self.root = self.connection.get_root()
+
+    def __setitem__(self, db_path, value):
+        if isinstance(value, OrderedDict):
+            value = PersistentOrderedDict(value.items())
+        elif isinstance(value, dict):
+            value = durus.persistent_dict.PersistentDict(value.items())
+        elif isinstance(value, list):
+            value = durus.persistent_list.PersistentList(value)
+        elif isinstance(value, set):
+            value = durus.persistent_set.PersistentSet(value)
+        super(DurusStorage, self).__setitem__(db_path, value)
 
 
 class ZodbStorage(BaseTransactionalStorage):
