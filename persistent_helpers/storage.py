@@ -3,6 +3,7 @@ from collections import OrderedDict
 from path import path
 from ZODB import DB
 from ZEO import ClientStorage
+import durus.file_storage
 import durus.client_storage
 import durus.connection
 import durus.btree
@@ -79,7 +80,7 @@ class DurusStorage(BaseTransactionalStorage):
             )
         else:
             self.connection = durus.connection.Connection(
-                    durus.client_storage.ClientStorage(self.host),
+                    durus.file_storage.FileStorage(self.host),
                     cache_size=self.cache_size
             )
         self.root = self.connection.get_root()
