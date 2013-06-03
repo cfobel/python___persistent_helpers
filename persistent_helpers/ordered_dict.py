@@ -50,5 +50,18 @@ class PersistentOrderedDict(persistent.Persistent):
             self[key] = default_value
         return self[key]
 
+    def move_to_end(self, key, last=True):
+        assert(key in self)
+        items = []
+        for k, v in self.items():
+            if k != key:
+                items.append((k, v))
+                del self[k]
+        if last:
+            items.append((key, self[key]))
+            del self[key]
+        for k, v in items:
+            self[k] = v
+
     def __contains__(self, key):
         return key in self.data
