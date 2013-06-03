@@ -40,6 +40,10 @@ class BaseTransactionalStorage(object):
         raise NotImplementedError, ('%s is an abstract base class' %
                                     self.__class__)
 
+    def __len__(self):
+        raise NotImplementedError, ('%s is an abstract base class' %
+                                    self.__class__)
+
     def __getitem__(self, db_path):
         nodes = db_path.split('/')
         assert(nodes[0] == '')
@@ -95,6 +99,9 @@ class DurusStorage(BaseTransactionalStorage):
         elif isinstance(value, set):
             value = durus.persistent_set.PersistentSet(value)
         super(DurusStorage, self).__setitem__(db_path, value)
+
+    def __len__(self):
+        return len(self.root.keys())
 
 
 class ZodbStorage(BaseTransactionalStorage):
