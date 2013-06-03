@@ -1,8 +1,6 @@
 from collections import OrderedDict
 
 from path import path
-from ZODB import DB
-from ZEO import ClientStorage
 import durus.file_storage
 import durus.client_storage
 import durus.connection
@@ -57,6 +55,7 @@ class BaseTransactionalStorage(object):
 
     def __setitem__(self, db_path, value):
         db_path = path(db_path)
+        assert(db_path.parent)
         node = self[str(db_path.parent)]
         node[str(db_path.name)] = value
         return node
@@ -115,6 +114,9 @@ class ZodbStorage(BaseTransactionalStorage):
         transaction.commit()
 
     def reset_db(self):
+        from ZODB import DB
+        from ZEO import ClientStorage
+
         if self.port:
             self._storage = ClientStorage.ClientStorage((self.host, self.port))
         else:
