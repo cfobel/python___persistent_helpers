@@ -72,6 +72,9 @@ class DurusStorage(BaseTransactionalStorage):
     def abort(self):
         self.connection.abort()
 
+    def pack(self):
+        self.connection.pack()
+
     def commit(self):
         self.connection.commit()
 
